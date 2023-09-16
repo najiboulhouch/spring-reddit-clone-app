@@ -3,6 +3,7 @@ package net.najiboulhouch.redditcloneapp.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.najiboulhouch.redditcloneapp.config.AppConfig;
 import net.najiboulhouch.redditcloneapp.dto.AuthenticationResponse;
 import net.najiboulhouch.redditcloneapp.dto.LoginRequest;
 import net.najiboulhouch.redditcloneapp.dto.RefreshTokenRequest;
@@ -46,6 +47,7 @@ public class AuthService {
     private final MailService mailService;
     private final JwtProvider jwtProvider ;
     private final RefreshTokenService refreshTokenService;
+    private final AppConfig appConfig;
 
     public void signup(RegisterRequest registerRequest){
 
@@ -68,7 +70,7 @@ public class AuthService {
             CompletableFuture<String> stringCompletableFuture = mailService.sendMail(new NotificationEmail("Please Activate your Account",
                     user.getEmail(), "Thank you for signing up to Spring Reddit, " +
                     "please click on the below url to activate your account : " +
-                    "http://localhost:8080/api/auth/accountVerification/" + token));
+                    appConfig.getUrl() + "/api/auth/accountVerification/" + token));
             log.info(stringCompletableFuture.get());
         } catch (SpringRedditException | InterruptedException | ExecutionException e) {
             throw new SpringRedditException(e.getMessage());
