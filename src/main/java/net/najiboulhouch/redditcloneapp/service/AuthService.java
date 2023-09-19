@@ -88,16 +88,15 @@ public class AuthService {
     }
 
     public void verifyAccount(String token) {
-        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        verificationToken.orElseThrow(() -> new SpringRedditException("Invalid Token"));
-        fetchUserAndEnabled(verificationToken.get());
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(() -> new SpringRedditException("Invalid Token"));
+        fetchUserAndEnabled(verificationToken);
     }
 
     private void fetchUserAndEnabled(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
-       User user =  userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with name " + username));
-       user.setEnabled(true);
-       userRepository.save(user);
+        User user =  userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with name " + username));
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {

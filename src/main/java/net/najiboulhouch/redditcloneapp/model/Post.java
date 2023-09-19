@@ -1,6 +1,7 @@
 package net.najiboulhouch.redditcloneapp.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -9,9 +10,9 @@ import java.time.Instant;
 
 @Setter @Getter
 @Entity
+@NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Post extends BaseEntity {
 
     @NotBlank(message = "Post Name cannot by empty or Null")
@@ -29,4 +30,13 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "subreddit_Id" , referencedColumnName = "id")
     private Subreddit subreddit;
 
+    public Post(Long id, Instant createdDate, String postName, @Nullable String url, @Nullable String description, Integer voteCount, User user, Subreddit subreddit) {
+        super(id, createdDate);
+        this.postName = postName;
+        this.url = url;
+        this.description = description;
+        this.voteCount = voteCount;
+        this.user = user;
+        this.subreddit = subreddit;
+    }
 }

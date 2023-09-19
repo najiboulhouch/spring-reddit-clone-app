@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.najiboulhouch.redditcloneapp.dto.CommentsDto;
 import net.najiboulhouch.redditcloneapp.exceptions.ResourceNotFoundException;
+import net.najiboulhouch.redditcloneapp.exceptions.SpringRedditException;
 import net.najiboulhouch.redditcloneapp.mapper.CommentMapper;
 import net.najiboulhouch.redditcloneapp.model.Comment;
 import net.najiboulhouch.redditcloneapp.model.NotificationEmail;
@@ -53,8 +54,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentsDto> getAllCommentsForPost(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id : " + postId.toString()));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found with id : " + postId));
 
         return commentRepository.findByPost(post)
                 .stream()
@@ -71,5 +71,12 @@ public class CommentService {
                 .stream()
                 .map(commentMapper::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    public boolean containsSwearWords(String comment) {
+        if (comment.contains("shit")) {
+            throw new SpringRedditException("Comments contains unacceptable language");
+        }
+        return true;
     }
 }
